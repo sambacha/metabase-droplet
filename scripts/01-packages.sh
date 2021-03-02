@@ -1,16 +1,22 @@
 #!/bin/bash
 
 # upgrade packages
-apt-get -y update
-apt-get -y upgrade
-apt-get -y autoremove
-apt-get -y autoclean
+sudo apt-get -y update -qq
+
+sudo apt-get -qq update && \
+     apt-get -qq -y --no-install-recommends install gnupg software-properties-common locales curl && \
+     locale-gen en_US.UTF-8
+
+sudo apt-get update && sudo apt-get install java-common -y -qq
 
 # install openJDK
-apt-get install -y default-jdk
+wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add - 
+sudo add-apt-repository 'deb https://apt.corretto.aws stable main'
+sudo apt-get update; sudo apt-get install -y java-11-amazon-corretto-jdk
+
 
 # download and set permission for metabase
-wget http://downloads.metabase.com/v0.34.2/metabase.jar
+wget https://downloads.metabase.com/v0.38.0.1/metabase.jar
 mkdir /opt/metabase/
 mv metabase.jar /opt/metabase/metabase.jar
 chmod 775 /opt/metabase/metabase.jar
